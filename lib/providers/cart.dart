@@ -21,6 +21,8 @@ class Cart with ChangeNotifier {
 
   Map<String, CartItem> get items => {..._items};
 
+  int get totalQuantity => _items.length;
+
   void addItem(String productId, double price, String title) {
     if (_items.containsKey(productId)) {
       _items.update(
@@ -32,6 +34,7 @@ class Cart with ChangeNotifier {
           price: value.price,
         ),
       );
+      notifyListeners();
       return;
     }
     _items.putIfAbsent(
@@ -43,5 +46,6 @@ class Cart with ChangeNotifier {
         price: price,
       ),
     );
+    notifyListeners();
   }
 }
