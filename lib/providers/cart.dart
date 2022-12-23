@@ -22,6 +22,13 @@ class Cart with ChangeNotifier {
   Map<String, CartItem> get items => {..._items};
 
   int get totalQuantity => _items.length;
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach((key, value) {
+      total += value.totalPrice;
+    });
+    return total;
+  }
 
   void addItem(String productId, double price, String title) {
     if (_items.containsKey(productId)) {
