@@ -20,6 +20,7 @@ class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items => {..._items};
+  List<CartItem> get itemsList => _items.values.toList();
 
   int get totalQuantity => _items.length;
   double get totalAmount {
