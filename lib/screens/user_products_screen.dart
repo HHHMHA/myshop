@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/widgets/app_drawer.dart';
 import 'package:myshop/widgets/user_product_item.dart';
-import 'package:provider/provider.dart'
+import 'package:provider/provider.dart';
 
-import '../providers/products.dart';;
+import '../providers/products.dart';
 
 class UserProductScreen extends StatelessWidget {
   static const routName = '/user-products';
@@ -31,7 +31,11 @@ class UserProductScreen extends StatelessWidget {
           itemCount: productsData.items.length,
           itemBuilder: (ctx, index) => Column(
             children: [
-              UserProductItem(title: productsData.items[index].title, imageUrl: productsData.items[index].imageUrl, key: ValueKey(productsData.items[index].id),),
+              UserProductItem(
+                title: productsData.items[index].title,
+                imageUrl: productsData.items[index].imageUrl,
+                key: ValueKey(productsData.items[index].id),
+              ),
               const Divider(),
             ],
           ),
