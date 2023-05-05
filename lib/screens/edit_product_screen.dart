@@ -26,11 +26,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
     price: 0.0,
     imageUrl: '',
   );
+  var _isInit = true;
 
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context)?.settings.arguments as String;
+      _editedProduct =
+          Provider.of<Products>(context, listen: false).findById(productId);
+      _imageUrlController.text = _editedProduct.imageUrl;
+      _isInit = false;
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -57,7 +70,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState?.save();
-    Provider.of<Products>(context, listen: false).add(_editedProduct);
+    if (_editedProduct.id != '0') {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).add(_editedProduct);
+    }
     Navigator.of(context).pop();
   }
 
@@ -91,6 +109,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   }
                   return null;
                 },
+                initialValue: _editedProduct.title,
                 onSaved: (value) {
                   Product(
                     id: _editedProduct.id,
@@ -98,6 +117,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: _editedProduct.description,
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -109,6 +129,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (value) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                initialValue: _editedProduct.price.toString(),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a price.';
@@ -128,6 +149,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: _editedProduct.description,
                     price: double.parse(value!),
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -139,6 +161,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (value) {
                   FocusScope.of(context).requestFocus(_imageUrlFocusNode);
                 },
+                initialValue: _editedProduct.description,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
@@ -152,6 +175,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     description: value!,
                     price: _editedProduct.price,
                     imageUrl: _editedProduct.imageUrl,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -185,6 +209,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       onFieldSubmitted: (_) {
                         _saveForm();
                       },
+                      initialValue: _editedProduct.imageUrl,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an image URL';
@@ -198,6 +223,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           description: _editedProduct.description,
                           price: _editedProduct.price,
                           imageUrl: value!,
+                          isFavorite: _editedProduct.isFavorite,
                         );
                       },
                     ),
